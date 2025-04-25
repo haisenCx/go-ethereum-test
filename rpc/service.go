@@ -25,7 +25,7 @@ import (
 	"sync"
 	"unicode"
 
-	"github.com/sirupsen/logrus"
+	"github.com/ethereum/go-ethereum/log"
 )
 
 var (
@@ -181,7 +181,7 @@ func (c *callback) makeArgTypes() {
 
 // call invokes the callback.
 func (c *callback) call(ctx context.Context, method string, args []reflect.Value) (res interface{}, errRes error) {
-	// Create the argument slice.
+	fmt.Println("test call", method)
 	fullargs := make([]reflect.Value, 0, 2+len(args))
 	if c.rcvr.IsValid() {
 		fullargs = append(fullargs, c.rcvr)
@@ -197,7 +197,8 @@ func (c *callback) call(ctx context.Context, method string, args []reflect.Value
 			const size = 64 << 10
 			buf := make([]byte, size)
 			buf = buf[:runtime.Stack(buf, false)]
-			logrus.Error("RPC method " + method + " crashed: " + fmt.Sprintf("%v\n%s", err, buf))
+			fmt.Printf("RPC method %s crashed: %v\n%s", method, err, buf)
+			log.Error("RPC method " + method + " crashed: " + fmt.Sprintf("%v\n%s", err, buf))
 			errRes = &internalServerError{errcodePanic, "method handler crashed"}
 		}
 	}()

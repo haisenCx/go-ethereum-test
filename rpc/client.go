@@ -349,17 +349,20 @@ func (c *Client) CallContext(ctx context.Context, result interface{}, method str
 	}
 
 	if c.isHTTP {
+		fmt.Println("test callContext", method)
 		err = c.sendHTTP(ctx, op, msg)
 	} else {
 		err = c.send(ctx, op, msg)
 	}
 	if err != nil {
+		fmt.Println("test callContext error", err)
 		return err
 	}
 
 	// dispatch has accepted the request and will close the channel when it quits.
 	batchresp, err := op.wait(ctx, c)
 	if err != nil {
+		fmt.Println("test callContext wait error", err)
 		return err
 	}
 	resp := batchresp[0]
